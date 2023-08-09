@@ -1,0 +1,5 @@
+---
+- hosts: polkanodes_ec2
+  become: yes
+  roles:
+    - role: setup

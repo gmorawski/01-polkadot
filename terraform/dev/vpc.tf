@@ -1,6 +1,9 @@
 # Terraform code to create a vpc with private and public subnets.
 data "aws_availability_zones" "available" {}
 
+##################
+# VPC modules
+##################
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
@@ -19,8 +22,4 @@ module "vpc" {
     Terraform   = "true"
     Environment = var.env
   }
-}
-
-output "private_subnets_0" {
-  value = module.vpc.private_subnets[0]
 }

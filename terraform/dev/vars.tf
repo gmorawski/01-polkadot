@@ -16,6 +16,6 @@ variable "vpc_cidr" {
 
 variable "ami" {
   description = "Ubuntu 22.04 LTS ami"
-  type    = string
-  default = "ami-04e601abe3e1a910f"
+  type        = string
+  default     = "ami-04e601abe3e1a910f"
 }

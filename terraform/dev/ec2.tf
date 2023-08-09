@@ -1,6 +1,6 @@
 locals {
 
-  azs      = slice(data.aws_availability_zones.available.names, 0, 2)
+  azs = slice(data.aws_availability_zones.available.names, 0, 2)
 
   tags = {
     Terraform   = "true"
@@ -39,20 +39,20 @@ module "polkadot-az2" {
   monitoring    = true
   subnet_id     = module.vpc.private_subnets[1]
 
-tags = local.tags
+  tags = local.tags
 
 }
 
 # EBS volume of size 1 TB to be attached to ec2 instance as a prerequisite
 resource "aws_volume_attachment" "ebs_az1" {
-  count = 1
+  count       = 1
   device_name = "/dev/sdh"
   volume_id   = aws_ebs_volume.ebs_az1[count.index].id
   instance_id = module.polkadot-az1[count.index].id
 }
 
 resource "aws_ebs_volume" "ebs_az1" {
-  count = 1
+  count             = 1
   availability_zone = element(local.azs, 0)
   size              = 1000
 
@@ -60,14 +60,14 @@ resource "aws_ebs_volume" "ebs_az1" {
 }
 
 resource "aws_volume_attachment" "ebs_az2" {
-  count = 1
+  count       = 1
   device_name = "/dev/sdh"
   volume_id   = aws_ebs_volume.ebs_az2[count.index].id
   instance_id = module.polkadot-az1[count.index].id
 }
 
 resource "aws_ebs_volume" "ebs_az2" {
-  count = 1
+  count             = 1
   availability_zone = element(local.azs, 1)
   size              = 1000
 
