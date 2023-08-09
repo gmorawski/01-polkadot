@@ -1,11 +1,4 @@
 ---
-- name: Create polkadot user
-  user:
-    name: polkadot
-    state: present
-    createhome: yes
-    shell: /bin/bash
-
 - name: Create Polkadot service file
   template:
     src: polkadot.service.j2

@@ -1,6 +1,5 @@
 ---
-- name: Upgrade polkadot
-  hosts: polkanodes_ec2
+- hosts: polkadotnodes
   become: yes
   serial: 1  # This specifies the number of servers to update simultaneously
   tasks:
@@ -9,6 +8,6 @@
         name: polkadot
         state: stopped
       
-    - name: Include setup role:
+    - name: Include setup role
       include_role:
         name: setup

@@ -22,7 +22,7 @@ Modules used:
 2. **EC2** - terraform-aws-modules/ec2-instance/aws
 
 Because of the time constrain I have used the modules available from the registry. In an actual scenario, self-hosted modules should be created and used.
-The state file for the terraform showuld be stored in S3 with locking mechanism by using DynamoDB. For testing purpose I have used "local" backend for storing the terraform state file. I have created the resources for "dev" environment similarly we can create the resources for prod env.
+The state file for the terraform showuld be stored in S3 with locking mechanism by using DynamoDB. For testing purpose I have used "local" backend for storing the terraform state file. I have created the resources for "dev" environment similarly we can create the resources for prod env. To test the code created 2 t3.micro instances in public subnet and assigned public ip to it to run the ansible target against it.
 
 Make target to create VPC and 2 ec2 instances in dev environment:
 
@@ -38,15 +38,15 @@ make terraform-destroy ENV=dev
 
 Make target to install the Polkadot binary and configure the service
 ```
-make install-polkadot
+make configure TARGET=polkadot/install
 ```
 
 #### Steps to upgrade the Polkadot binary version with below setps:
-Change the version of the polkadot binary version for variable "polkabot_binary_version" in ansible group_vars/all.yaml file. After this change run the ansible upgrade playbook with below make target:
+Change the version of the polkadot binary version for variable "polkabot_binary_version" in ansible defaults/main.yaml file. After this change run the ansible upgrade playbook with below make target:
  
  ```
- make upgrade-polkadot
+ make configure TARGET=polkadot/upgrade
  ```
 
 ### Important Note: 
-I was not able to test the complete end to end deployment because of the large machine size required as a prerequisite for runnning the polkadot binary. In free tier account it is not possible.
+I was not able to test the complete end to end deployment because of the large machine size required as a prerequisite for runnning the polkadot binary. In free tier account it is not possible so I tested it against the 2 t3.micro instances.

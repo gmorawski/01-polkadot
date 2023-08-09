@@ -1,5 +1,5 @@
 ---
-- hosts: polkanodes_ec2
+- hosts: polkadotnodes
   become: yes
   roles:
-    - role: setup
+    - setup

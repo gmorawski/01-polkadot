@@ -1,5 +1,7 @@
 TERRAFORM_DIR := $(shell pwd)/terraform
-ANSIBLE_DIR := $(shell pwd)/ansible
+ANSIBLE_DIR := $(shell pwd)/ansible/polkadot
+
+word-slash = $(word $2,$(subst /, ,$1)) # Splits $1 by '/' character and returns $2th match
 
 ########## Terraform targets ###############
 
@@ -35,11 +37,5 @@ terraform-destroy:
 	cd ..
 
 ################### Ansible targets ###################
-
-install-polkadot:
-	@echo "Installing Polkadot..."
-	ansible_playbook $(ANSIBLE_DIR)/playbooks/install.yaml
-
-upgrade-polkadot:
-	@echo "Upgrade Polkadot..."
-	ansible_playbook $(ANSIBLE_DIR)/playbooks/upgrade.yaml
+configure:
+	make -C ansible/$(call word-slash,$(TARGET), 1) $(call word-slash,$(TARGET), 2)

@@ -25,7 +25,7 @@ module "polkadot-az1" {
   name   = "polkadot-az1-$(count.index)"
 
   ami                         = var.ami
-  instance_type               = "t3.micro"
+  instance_type               = "t3.micro" # Replace this with instance type c6i.4xlarge
   key_name                    = aws_key_pair.keypair.key_name
   monitoring                  = true
   subnet_id                   = module.vpc.public_subnets[0]
@@ -47,7 +47,7 @@ module "polkadot-az2" {
   name   = "polkadot-az2-$(count.index)"
 
   ami                         = var.ami
-  instance_type               = "t3.micro"
+  instance_type               = "t3.micro" # Replace this with instance type c6i.4xlarge
   key_name                    = aws_key_pair.keypair.key_name
   monitoring                  = true
   subnet_id                   = module.vpc.public_subnets[1]
@@ -62,3 +62,4 @@ module "polkadot-az2" {
   tags = local.tags
 
 }
+
