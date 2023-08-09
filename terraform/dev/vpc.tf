@@ -17,9 +17,19 @@ module "vpc" {
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_dns_hostnames = true
+  create_igw           = true
 
   tags = {
     Terraform   = "true"
     Environment = var.env
   }
+}
+
+resource "aws_security_group_rule" "ssh_inbound" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"] # Adjust this to your security requirements
+  security_group_id = module.vpc.default_security_group_id
 }

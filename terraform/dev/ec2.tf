@@ -12,17 +12,30 @@ locals {
 # EC2 modules
 ##################
 
+
+resource "aws_key_pair" "keypair" {
+  key_name   = "ravi-key"
+  public_key = file("~/.ssh/id_rsa.pub")
+}
+
 # Create ec2 instance in private subnet of the AZ1
 module "polkadot-az1" {
   source = "terraform-aws-modules/ec2-instance/aws"
   count  = 1
   name   = "polkadot-az1-$(count.index)"
 
-  ami           = var.ami
-  instance_type = "c6i.4xlarge"
-  key_name      = "user1"
-  monitoring    = true
-  subnet_id     = module.vpc.private_subnets[0]
+  ami                         = var.ami
+  instance_type               = "t3.micro"
+  key_name                    = aws_key_pair.keypair.key_name
+  monitoring                  = true
+  subnet_id                   = module.vpc.public_subnets[0]
+  associate_public_ip_address = true # Attach a public IP address for testing purpose. Instance should be in private subnet and accessed though LB.
+  root_block_device = [
+    {
+      volume_type = "gp2"
+      volume_size = 10 # Change to the desired root volume size in GB for creating the instance
+    }
+  ]
 
   tags = local.tags
 }
@@ -33,43 +46,19 @@ module "polkadot-az2" {
   count  = 1
   name   = "polkadot-az2-$(count.index)"
 
-  ami           = var.ami
-  instance_type = "c6i.4xlarge"
-  key_name      = "user1"
-  monitoring    = true
-  subnet_id     = module.vpc.private_subnets[1]
+  ami                         = var.ami
+  instance_type               = "t3.micro"
+  key_name                    = aws_key_pair.keypair.key_name
+  monitoring                  = true
+  subnet_id                   = module.vpc.public_subnets[1]
+  associate_public_ip_address = true # Attach a public IP address
+  root_block_device = [
+    {
+      volume_type = "gp2"
+      volume_size = 8 # Change to the desired root volume size in GB for creating the instance
+    }
+  ]
 
   tags = local.tags
 
-}
-
-# EBS volume of size 1 TB to be attached to ec2 instance as a prerequisite
-resource "aws_volume_attachment" "ebs_az1" {
-  count       = 1
-  device_name = "/dev/sdh"
-  volume_id   = aws_ebs_volume.ebs_az1[count.index].id
-  instance_id = module.polkadot-az1[count.index].id
-}
-
-resource "aws_ebs_volume" "ebs_az1" {
-  count             = 1
-  availability_zone = element(local.azs, 0)
-  size              = 1000
-
-  tags = local.tags
-}
-
-resource "aws_volume_attachment" "ebs_az2" {
-  count       = 1
-  device_name = "/dev/sdh"
-  volume_id   = aws_ebs_volume.ebs_az2[count.index].id
-  instance_id = module.polkadot-az1[count.index].id
-}
-
-resource "aws_ebs_volume" "ebs_az2" {
-  count             = 1
-  availability_zone = element(local.azs, 1)
-  size              = 1000
-
-  tags = local.tags
 }
